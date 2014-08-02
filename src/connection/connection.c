@@ -57,10 +57,61 @@ node_t *connection_pop(connection_t *connection)
 	if(connection->path_length <= 2)
 		return NULL;
 
-	connection_t *popped = connection->path[connection->path_length-2];
+	node_t *popped = connection->path[connection->path_length-2];
 	connection->path[connection->path_length-2] = connection->path[connection->path_length-1];
 
 	connection->path_length--;
 
 	return popped;
+}
+
+//===========
+// Operations
+//===========
+int connection_establish(connection_t *connection)
+{
+	//Check if in the right state
+	if(connection->state != VALID) {
+		fprintf(stderr, "Error establishing connection. Connection state is not VALLID.\n");
+		return 0;
+	}
+
+	//Get connections between nodes
+	int i;
+	for(i = 1; i < connection->path_length; i++) {
+		if(!node_use_connection(connection->path[i], connection->path[i-1]->name)) {
+			//If a connection is not available, free the connections already established
+			fprintf(stderr, "Error. No available connection between %d and %d.\n", i-1, i);
+
+			for(i = i-1; i > 0; i--)
+				node_free_connection(connection->path[i], connection->path[i-1]->name);
+
+			break;
+		}
+	}
+
+	//If established
+	if(i == connection->path_length)
+		connection->state = CONNECTED;
+
+	return 1;
+}
+
+int connection_stop(connection_t *connection)
+{
+	//Check if connected
+	if(connection->state != CONNECTED) {
+		fprintf(stderr, "Error stopping connection. Connection not in CONNECTED state.\n");
+		return 0;
+	}
+
+	//Free connections
+	int i;
+	for(i = 1; i < connection->path_length; i++)
+		node_free_connection(connection->path[i], connection->path[i-1]->name);
+
+	//Set state
+	connection->state = DISCONNECTED;
+
+	return 1;
 }
