@@ -20,14 +20,6 @@ typedef enum {
 	CONNECTED		//Ready to send messages
 } connection_state_t;
 
-/**
- * Used for the send function to identify which is the sender and which is the receiver.
- */
-typedef enum {
-	FIRST,
-	SECOND
-} connection_destination_t;
-
 //Maximum path between 2 nodes
 #define MAX_PATH 50
 
@@ -36,12 +28,12 @@ typedef enum {
 //===========================
 typedef struct {
 	//The connected nodes
-	node_t *first, node_t *second;
+	node_t *source, *destination;
 
 	//Path between the nodes
 	node_t *path[MAX_PATH];		//The path from the first node to the second
 	int path_length;			//The length of the path
-	//Node: path[0] = first, path[path_length-1] = second
+	//Node: path[0] = source, path[path_length-1] = destination
 
 	//Connection state
 	connection_state_t state;
@@ -56,8 +48,8 @@ typedef struct {
  * Allocate memory for a new connection and initialize it.
  */
 connection_t *connection_new(
-	node_t *first,
-	node_t *second
+	node_t *source,
+	node_t *destination
 );
 
 /**
@@ -65,8 +57,8 @@ connection_t *connection_new(
  */
 void connection_init(
 	connection_t *connection,
-	node_t *first,
-	node_t *second
+	node_t *source,
+	node_t *destination
 );
 
 
@@ -109,11 +101,18 @@ int connection_stop(
 );
 
 /**
+ * Reverses a connection(aka source will become destination and vice versa)
+ */
+void connection_reverse(
+	connection_t *connection
+);
+
+/**
  * Sends a message from FIRST to SECOND, or from SECOND to FIRST using a connection in the CONNECTED state.
  */
 int connection_send(
 	const connection_t *connection,
-	connection_destination_t destination
+	const char *message
 );
 
 #endif /* CONNECTION_H_ */
