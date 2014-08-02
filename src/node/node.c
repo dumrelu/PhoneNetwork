@@ -137,3 +137,40 @@ void node_print(const node_t *node) {
 
 	printf(".\n");
 }
+
+//===========
+// Operations
+//===========
+int node_use_connection(node_t *node, const char *neighborName)
+{
+	//Get indexes
+	int neighborIndex = node_get_neighbor_index(node, neighborName);
+	if(neighborIndex == -1)
+		return 0;
+	node_t *neighbor = node->neighbors[neighborIndex];
+	int nodeIndex = node_get_neighbor_index(neighbor, node->name);
+
+	//Check if there is a connection available
+	if(node->n_connections[neighborIndex] == 0 || neighbor->n_connections[nodeIndex] == 0)
+		return 0;
+
+	//Use connections
+	node->n_connections[neighborIndex]--;
+	neighbor->n_connections[nodeIndex]--;
+
+	return 1;
+}
+
+void node_free_connection(node_t *node, const char *neighborName)
+{
+	//Get indexes
+	int neighborIndex = node_get_neighbor_index(node, neighborName);
+	if(neighborIndex == -1)
+		return ;
+	node_t *neighbor = node->neighbors[neighborIndex];
+	int nodeIndex = node_get_neighbor_index(neighbor, node->name);
+
+	//Free connections
+	node->n_connections[neighborIndex]++;
+	neighbor->n_connections[nodeIndex]++;
+}
