@@ -5,6 +5,7 @@
  *      Author: relu
  */
 #include "connection.h"
+#include <unistd.h>
 
 //======================
 // Creating a connection
@@ -112,6 +113,52 @@ int connection_stop(connection_t *connection)
 
 	//Set state
 	connection->state = DISCONNECTED;
+
+	return 1;
+}
+
+connection_t *connection_reverse(connection_t *connection)
+{
+	//Allocate memory
+	connection_t *reversed = (connection_t*) malloc(sizeof(connection_t));
+
+	//Copy original
+	*reversed = *connection;
+
+	//Reverse
+	int i;
+	for(i = 0; i < reversed->path_length; i++)
+		reversed->path[i] = connection->path[reversed->path_length-1-i];
+
+	//Reset source and destination
+	reversed->source = connection->destination;
+	reversed->destination = connection->source;
+
+	return reversed;
+}
+
+int connection_send(const connection_t *connection, const char *message)
+{
+	if(connection->state != CONNECTED) {
+		fprintf(stderr, "Send error. Connection is not in the connected state.\n");
+		return 0;
+	}
+
+	//Pretend that it's sending a message
+	printf("Sending message from %s...\n", connection->source->name);
+
+	//Print path
+	printf("Message path: ");
+	int i;
+	for(i = 0; i < connection->path_length-1; i++) {
+		printf("%s->", connection->path[i]->name);
+		fflush(stdout);
+		sleep(1);
+	}
+	printf("%s.\n", connection->path[i]->name);
+
+	//Print message
+	printf("%s received message: \"%s\".\n", connection->destination->name, message);
 
 	return 1;
 }

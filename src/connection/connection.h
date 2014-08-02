@@ -103,7 +103,7 @@ int connection_stop(
 /**
  * Reverses a connection(aka source will become destination and vice versa)
  */
-void connection_reverse(
+connection_t *connection_reverse(
 	connection_t *connection
 );
 

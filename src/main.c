@@ -21,6 +21,11 @@ int main(int argc, char *argv[])
 
 	connection_push(connection, node2);
 
+	//Reverse
+	connection_t *buffer = connection;
+	connection = connection_reverse(connection);
+	free(buffer);
+
 	int i;
 	for(i = 0; i < connection->path_length; i++)
 		node_print(connection->path[i]);
@@ -29,6 +34,9 @@ int main(int argc, char *argv[])
 
 	for(i = 0; i < connection->path_length; i++)
 			node_print(connection->path[i]);
+
+	//Send message
+	connection_send(connection, "Hello World!");
 
 	printf("Stop connection: %d\n", connection_stop(connection));
 
