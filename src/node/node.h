@@ -81,7 +81,8 @@ void node_setName(
  */
 int node_add_neighbor(
 	node_t *node,
-	node_t *neighbor
+	node_t *neighbor,
+	int n_connections
 );
 
 /**
@@ -110,6 +111,13 @@ node_t *node_get_neighbor(
 int node_remove_neighbor(
 	node_t *node,
 	const char *neighborName
+);
+
+/**
+ * Prints information about the node.
+ */
+void node_print(
+	const node_t *node
 );
 
 
