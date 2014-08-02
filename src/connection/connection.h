@@ -69,7 +69,7 @@ void connection_init(
 /**
  * Add a new node to the path.
  */
-void connection_push(
+int connection_push(
 	connection_t *connection,
 	node_t *node
 );
