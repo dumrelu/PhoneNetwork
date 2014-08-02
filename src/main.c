@@ -23,9 +23,13 @@ int main(int argc, char *argv[])
 	node_print(node2);
 	node_print(node3);
 
-	free(node1);
-	free(node2);
-	free(node3);
+	node_free(node2);
+
+	node_print(node1);
+	node_print(node3);
+
+	node_free(node1);
+	node_free(node3);
 
 	return 0;
 }

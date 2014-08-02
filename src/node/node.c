@@ -174,3 +174,18 @@ void node_free_connection(node_t *node, const char *neighborName)
 	node->n_connections[neighborIndex]++;
 	neighbor->n_connections[nodeIndex]++;
 }
+
+//=============
+// Finalization
+//=============
+void node_free(node_t *node)
+{
+	node_uninit(node);
+	free(node);
+}
+
+void node_uninit(node_t *node)
+{
+	while(node->n_neighbors)
+		node_remove_neighbor(node, node->neighbors[0]->name);
+}
