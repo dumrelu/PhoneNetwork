@@ -5,11 +5,13 @@
  *      Author: relu
  */
 #include <stdio.h>
-#include "connection/connection.h"
+#include "network/network.h"
 
 int main(int argc, char *argv[])
 {
-	node_t *node1 = node_new("Node1");
+	network_t *network = network_create("test_network.txt", NULL);
+
+	/*node_t *node1 = node_new("Node1");
 	node_t *node2 = node_new("Node2");
 	node_t *node3 = node_new("Node3");
 
@@ -47,7 +49,7 @@ int main(int argc, char *argv[])
 	node_free(node2);
 	node_free(node3);
 
-	free(connection);
+	free(connection);*/
 
 	return 0;
 }
