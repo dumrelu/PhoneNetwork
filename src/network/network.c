@@ -53,9 +53,50 @@ void network_read(network_t *network)
 		node_t *node2 = network_lookup(network, nodeName2);
 		if(!node2) { 	//Create it and add it to the network
 			node2 = node_new(nodeName2);
+			network_add_node(network, node2);
+		}
+
+		//Add a link between them, if it doesn't exist already
+		if(node_get_neighbor(node1, node2->name) == NULL) {
+			node_add_neighbor(node1, node2, n_connections);
 		}
 	}
 
 	//Close file
 	fclose(file);
+}
+
+
+
+int network_index(const network_t *network, const char *nodename)
+{
+	//Iterate through the nodes and see if the names match
+	int i;
+	for(i = 0; i < network->n_nodes; i++)
+		if(strcmp(network->nodes[i]->name, nodename) == 0)
+			return i;
+
+	return -1;
+}
+
+node_t *network_lookup(const network_t *network, const char *nodename)
+{
+	//Get the index
+	int index = network_index(network, nodename);
+	if(index == -1)
+		return NULL;
+
+	return network->nodes[index];
+}
+
+int network_add_node(network_t *network, node_t *node)
+{
+	//Check if there are any more slots available
+	if(network->n_nodes == MAX_NODES)
+		return 0;
+
+	//Add to array
+	network->nodes[network->n_nodes++] = node;
+
+	return 1;
 }
