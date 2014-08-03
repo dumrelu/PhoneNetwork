@@ -19,12 +19,18 @@
 //Maximum number of connections
 #define MAX_CONNECTIONS 50
 
+//If NO_STORE is not defined, every time a new connection is requested, the connections array
+//will be searched to find a connection with the matching source and destination, thus reducing the connection time
+//if the connection is already established.
+//If NO_STORE is defined, connect() will return a new connection every time
+#define NO_STORE
+
 //==================================================
 // The structure that holds the nodes in the network
 //==================================================
 struct network {
 	//The file in which the network is stored
-	const char filename[MAX_FILENAME_LENGTH];
+	char filename[MAX_FILENAME_LENGTH];
 
 	//The nodes on the network
 	node_t *nodes[MAX_NODES];
@@ -128,9 +134,9 @@ connection_t *connect(
 );
 
 /**
- * Disconnects the given connection and frees it.
+ * Disconnects the given connection.
  */
-void disconnect(
+int disconnect(
 	network_t *network,
 	connection_t *connection
 );
@@ -140,8 +146,8 @@ void disconnect(
 //=============
 // Finalization
 //=============
-void network_write(
-	network_t *network
+int network_write(
+	const network_t *network
 );
 
 void network_shutdown(

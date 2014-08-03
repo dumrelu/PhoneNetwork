@@ -10,6 +10,9 @@
 
 #include "../node/node.h"
 
+//We have to define NO_SLEEP so that the connection_send() function won't sleep to make the output pretty
+#define NO_SLEEP
+
 /**
  * Connection states
  */
@@ -105,6 +108,13 @@ int connection_stop(
  */
 connection_t *connection_reverse(
 	connection_t *connection
+);
+
+/**
+ * Prints the path from source to destination, if CONNECTED.
+ */
+void connection_printPath(
+	const connection_t *connection
 );
 
 /**

@@ -87,13 +87,14 @@ int connection_establish(connection_t *connection)
 			for(i = i-1; i > 0; i--)
 				node_free_connection(connection->path[i], connection->path[i-1]->name);
 
-			break;
+			connection->state = INVALID;
+
+			return 0;
 		}
 	}
 
 	//If established
-	if(i == connection->path_length)
-		connection->state = CONNECTED;
+	connection->state = CONNECTED;
 
 	return 1;
 }
@@ -137,8 +138,24 @@ connection_t *connection_reverse(connection_t *connection)
 	return reversed;
 }
 
+void connection_printPath(const connection_t *connection)
+{
+	//Print path
+	printf("Path from %s to %s: ", connection->source->name, connection->destination->name);
+	int i;
+	for(i = 0; i < connection->path_length-1; i++) {
+		printf("%s->", connection->path[i]->name);
+	}
+	printf("%s.\n", connection->path[i]->name);
+}
+
 int connection_send(const connection_t *connection, const char *message)
 {
+	if(connection == NULL) {
+		fprintf(stderr, "Null connection.\n");
+		return 0;
+	}
+
 	if(connection->state != CONNECTED) {
 		fprintf(stderr, "Send error. Connection is not in the connected state.\n");
 		return 0;
@@ -152,8 +169,11 @@ int connection_send(const connection_t *connection, const char *message)
 	int i;
 	for(i = 0; i < connection->path_length-1; i++) {
 		printf("%s->", connection->path[i]->name);
-		fflush(stdout);
-		sleep(1);
+
+		#ifndef NO_SLEEP
+			fflush(stdout);
+			sleep(1);
+		#endif
 	}
 	printf("%s.\n", connection->path[i]->name);
 
