@@ -16,7 +16,7 @@
 typedef enum {
 	INVALID, 		//Bad path
 	VALID, 			//Good path
-	DISCONNECTED,	//Was once connected, then it normally disconnected
+	DISCONNECTED,	//Was once connected
 	CONNECTED		//Ready to send messages
 } connection_state_t;
 
